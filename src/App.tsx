@@ -1,16 +1,18 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
+import createSagaMiddleware from 'redux-saga'
 import logger from 'redux-logger'
 import './App.css'
 
-import { Connected } from 'components/Connected';
-import { reducer } from 'store/reducers';
-//import store from './store';
+import { Connected } from 'components/Connected'
+import { reducer } from 'store/reducers'
+import { watchLoadData } from 'store/sagas'
 
 function App() {
-  const store = createStore(reducer, applyMiddleware(thunk, logger))
+  const sagaMiddleware = createSagaMiddleware()
+  const store = createStore(reducer, applyMiddleware(logger, sagaMiddleware))
+  sagaMiddleware.run(watchLoadData)
 
   return (
     <Provider store={store}>
